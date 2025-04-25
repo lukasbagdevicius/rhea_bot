@@ -1,0 +1,82 @@
+<!-- RheaBot Chat Widget -->
+<div id="rheabot-widget" style="width: 100%; max-width: 800px; margin: 0 auto;">
+    <div style="background: linear-gradient(135deg, #8A2BE2, #FF69B4); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+        <h2>RheaBot | Supplement Consultant</h2>
+        <p>Ask me about RHEA Essentials Colostrum & Inositol supplements!</p>
+    </div>
+    <div id="chat-messages" style="height: 400px; overflow-y: auto; padding: 20px; border: 1px solid #ddd; background: white;"></div>
+    <div style="padding: 20px; border: 1px solid #ddd; border-top: none; border-radius: 0 0 10px 10px; background: white;">
+        <input type="text" id="user-input" placeholder="Type your question here..." style="width: 80%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        <button onclick="sendMessage()" style="width: 18%; padding: 10px; background: #8A2BE2; color: white; border: none; border-radius: 5px; margin-left: 2%;">Send</button>
+    </div>
+</div>
+
+<script>
+const API_URL = 'http://127.0.0.1:8000/chat';  // Your FastAPI endpoint
+let chatHistory = [];
+
+async function sendMessage() {
+    const input = document.getElementById('user-input');
+    const message = input.value;
+    if (!message) return;
+
+    // Add user message to chat
+    addMessageToChat('user', message);
+    input.value = '';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                history: chatHistory
+            })
+        });
+
+        const data = await response.json();
+
+        // Add bot message
+        addMessageToChat('bot', data.response);
+
+        // Update history using correct OpenAI format
+        chatHistory.push({ role: "user", content: message });
+        chatHistory.push({ role: "assistant", content: data.response });
+
+    } catch (error) {
+        console.error('Error:', error);
+        addMessageToChat('bot', '⚠️ Sorry, there was an error processing your request.');
+    }
+}
+
+function addMessageToChat(sender, message) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.style.margin = '10px 0';
+    messageDiv.style.padding = '10px';
+    messageDiv.style.borderRadius = '10px';
+
+    if (sender === 'user') {
+        messageDiv.style.backgroundColor = '#8A2BE2';
+        messageDiv.style.color = 'white';
+        messageDiv.style.marginLeft = '20%';
+    } else {
+        messageDiv.style.backgroundColor = '#f0f0f0';
+        messageDiv.style.marginRight = '20%';
+    }
+
+    messageDiv.textContent = message;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Handle Enter key
+document.getElementById('user-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+</script>
+<!-- End RheaBot Chat Widget -->
