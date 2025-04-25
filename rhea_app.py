@@ -182,7 +182,7 @@ async def chat_endpoint(request: ChatRequest):
         return {"response": f"⚠️ Internal error: {str(e)}"}
 
 # Gradio for browser preview
-demo = gr.ChatInterface(
+ddemo = gr.ChatInterface(
     fn=chat_response,
     title="RheaBot | Supplement Consultant",
     description="Ask me about RHEA Essentials Colostrum & Inositol supplements!",
@@ -192,8 +192,8 @@ demo = gr.ChatInterface(
         "Do you offer free shipping?",
         "What's your return policy?",
     ],
-    theme=gr.themes.Soft(primary_hue="purple", secondary_hue="pink"),
-    type="messages"
+    theme=gr.themes.Soft(primary_hue="purple", secondary_hue="pink")
+    # ⬆️ Remove the "type" argument completely
 )
 
 def run_fastapi():
