@@ -1,6 +1,6 @@
 import sys
 import gradio as gr
-from openai import OpenAI
+import openai
 from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
