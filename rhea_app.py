@@ -182,7 +182,7 @@ async def chat_endpoint(request: ChatRequest):
         return {"response": f"⚠️ Internal error: {str(e)}"}
 
 # Gradio for browser preview
-ddemo = gr.ChatInterface(
+demo = gr.ChatInterface(
     fn=chat_response,
     title="RheaBot | Supplement Consultant",
     description="Ask me about RHEA Essentials Colostrum & Inositol supplements!",
