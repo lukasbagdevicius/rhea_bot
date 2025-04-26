@@ -157,16 +157,30 @@ def chat_response(message, history):
         return f"⚠️ Error: {str(e)}"
 
 # FastAPI app for widget
-app = FastAPI()
+app = FastAPI(
+    title="RheaBot API",
+    description="API for Rhea's Supplement Store Chatbot",
+    version="1.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or restrict to ["http://127.0.0.1:8000"] if needed
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to RheaBot API",
+        "endpoints": {
+            "chat": "/chat",
+            "docs": "/docs"
+        },
+        "status": "online"
+    }
 
 class ChatRequest(BaseModel):
     message: str
