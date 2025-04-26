@@ -201,7 +201,12 @@ def run_fastapi():
     print(f"✅ Starting FastAPI server on 0.0.0.0:{port}")
     uvicorn.run("rhea_app:app", host="0.0.0.0", port=port, log_level="info")
 
-# ✅ FIXED: Only run Gradio and FastAPI locally
-if __name__ == "__main__" or "gunicorn" not in sys.modules:
-    threading.Thread(target=run_fastapi).start()
-    demo.launch(share=True)
+# ✅ FIXED: Only run FastAPI on Render, Gradio locally
+if __name__ == "__main__":
+    if os.environ.get("RENDER"):
+        # Running on Render - only start FastAPI
+        run_fastapi()
+    else:
+        # Running locally - start both FastAPI and Gradio
+        threading.Thread(target=run_fastapi).start()
+        demo.launch(share=True)
