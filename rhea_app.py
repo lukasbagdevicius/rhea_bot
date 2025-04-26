@@ -1,6 +1,5 @@
 import sys
 import gradio as gr
-import openai
 from fastapi import FastAPI
 import uvicorn
 from pydantic import BaseModel
@@ -8,9 +7,10 @@ import threading
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from openai import OpenAI
 load_dotenv()
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # System message
 system_message = """
@@ -147,7 +147,7 @@ def chat_response(message, history):
     messages.append({"role": "user", "content": message})
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages
         )
