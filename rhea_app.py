@@ -197,8 +197,9 @@ demo = gr.ChatInterface(
 )
 
 def run_fastapi():
-    print("✅ Starting FastAPI on http://127.0.0.1:8000")
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="info")
+    port = int(os.environ.get("PORT", 10000))  # Dynamic PORT
+    print(f"✅ Starting FastAPI server on 0.0.0.0:{port}")
+    uvicorn.run("rhea_app:app", host="0.0.0.0", port=port, log_level="info")
 
 # ✅ FIXED: Only run Gradio and FastAPI locally
 if __name__ == "__main__" or "gunicorn" not in sys.modules:
